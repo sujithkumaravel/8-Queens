@@ -1,0 +1,42 @@
+from constraint import Problem, AllDifferentConstraint
+
+# Step 1: Define Variables
+problem = Problem()
+
+# Create a variable for each row with a domain of 0 to 7 (representing columns)
+rows = range(8)
+columns = range(8)
+for row in rows:
+    problem.addVariable(row, columns)
+
+# Step 2: Add Constraints
+# Column Constraint: All values must be different
+problem.addConstraint(AllDifferentConstraint(), rows)
+
+# Diagonal Constraint: Ensure no two queens are on the same diagonal
+def diagonal_constraint(*queens):
+    for i in range(len(queens)):
+        for j in range(i + 1, len(queens)):
+            if abs(queens[i] - queens[j]) == abs(i - j):
+                return False
+    return True
+
+problem.addConstraint(diagonal_constraint, rows)
+
+# Step 4: Solve the Problem
+solutions = problem.getSolutions()
+
+# Step 5: Output the Solution
+# Display one solution
+if solutions:
+    solution = solutions[0]
+    board = [['.' for _ in range(8)] for _ in range(8)]
+    
+    for row in solution:
+        col = solution[row]
+        board[row][col] = 'Q'
+    
+    for row in board:
+        print(' '.join(row))
+else:
+    print("No solutions found")
